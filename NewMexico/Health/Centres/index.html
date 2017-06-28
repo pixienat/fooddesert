@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" href="css/leaflet-search.css" />
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/nmcounty20.js"></script>
+        <script src="data/Residuals1.js"></script>
+        <script src="data/nmhealthTRACTNUM2.js"></script>
+        <script>
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[31.6731317667,-110.184774141],[37.0423012624,-101.791364407]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        function setBounds() {
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_nmcounty20(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_'] !== null ? Autolinker.link(String(feature.properties['FID_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['County'] !== null ? Autolinker.link(String(feature.properties['County'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Diab'] !== null ? Autolinker.link(String(feature.properties['Diab'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['groc_ch'] !== null ? Autolinker.link(String(feature.properties['groc_ch'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['conv_ch'] !== null ? Autolinker.link(String(feature.properties['conv_ch'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['groc'] !== null ? Autolinker.link(String(feature.properties['groc'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['conv'] !== null ? Autolinker.link(String(feature.properties['conv'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SD12'] !== null ? Autolinker.link(String(feature.properties['SD12'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_nmcounty20_0(feature) {
+            if (feature.properties['Diab'] >= 4.500000 && feature.properties['Diab'] <= 5.900000 ) {
+                return {
+                pane: 'pane_nmcounty20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,1.0)',
+            }
+            }
+            if (feature.properties['Diab'] >= 5.900000 && feature.properties['Diab'] <= 7.800000 ) {
+                return {
+                pane: 'pane_nmcounty20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(200,221,240,1.0)',
+            }
+            }
+            if (feature.properties['Diab'] >= 7.800000 && feature.properties['Diab'] <= 9.000000 ) {
+                return {
+                pane: 'pane_nmcounty20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(115,179,216,1.0)',
+            }
+            }
+            if (feature.properties['Diab'] >= 9.000000 && feature.properties['Diab'] <= 10.800000 ) {
+                return {
+                pane: 'pane_nmcounty20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(40,121,185,1.0)',
+            }
+            }
+            if (feature.properties['Diab'] >= 10.800000 && feature.properties['Diab'] <= 13.000000 ) {
+                return {
+                pane: 'pane_nmcounty20',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(8,48,107,1.0)',
+            }
+            }
+        }
+        map.createPane('pane_nmcounty20');
+        map.getPane('pane_nmcounty20').style.zIndex = 400;
+        map.getPane('pane_nmcounty20').style['mix-blend-mode'] = 'normal';
+    var layer_nmcounty20 = new L.geoJson.multiStyle(json_nmcounty20, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_nmcounty20',
+        onEachFeature: pop_nmcounty20,
+        styles: [style_nmcounty20_0,]
+    });
+        bounds_group.addLayer(layer_nmcounty20);
+        map.addLayer(layer_nmcounty20);
+        function pop_Residuals1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ACRED'] !== null ? Autolinker.link(String(feature.properties['ACRED'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POLYNOM'] !== null ? Autolinker.link(String(feature.properties['POLYNOM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RESIDUAL'] !== null ? Autolinker.link(String(feature.properties['RESIDUAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Residuals1_0() {
+            return {
+                pane: 'pane_Residuals1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,9,142,1.0)',
+            }
+        }
+        map.createPane('pane_Residuals1');
+        map.getPane('pane_Residuals1').style.zIndex = 401;
+        map.getPane('pane_Residuals1').style['mix-blend-mode'] = 'normal';
+        var layer_Residuals1 = new L.geoJson.multiStyle(json_Residuals1, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Residuals1',
+            onEachFeature: pop_Residuals1,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Residuals1_0(feature))
+            },
+        ]});
+        var cluster_Residuals1 = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_Residuals1.addLayer(layer_Residuals1);
+
+        bounds_group.addLayer(layer_Residuals1);
+        cluster_Residuals1.addTo(map);
+        function pop_nmhealthTRACTNUM2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['index'] !== null ? Autolinker.link(String(feature.properties['index'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TRACTNUM'] !== null ? Autolinker.link(String(feature.properties['TRACTNUM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['label'] !== null ? Autolinker.link(String(feature.properties['label'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_nmhealthTRACTNUM2_0(feature) {
+            switch(feature.properties['index']) {
+                case '0':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(84,48,5,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '1':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(140,81,10,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(191,129,45,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(223,194,125,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(246,232,195,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(199,234,229,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(128,205,193,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '7':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(53,151,143,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '8':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(1,102,94,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '9':
+                    return {
+                pane: 'pane_nmhealthTRACTNUM2',
+                opacity: 1,
+                color: 'rgba(0,60,48,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_nmhealthTRACTNUM2');
+        map.getPane('pane_nmhealthTRACTNUM2').style.zIndex = 402;
+        map.getPane('pane_nmhealthTRACTNUM2').style['mix-blend-mode'] = 'normal';
+    var layer_nmhealthTRACTNUM2 = new L.geoJson.multiStyle(json_nmhealthTRACTNUM2, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_nmhealthTRACTNUM2',
+        onEachFeature: pop_nmhealthTRACTNUM2,
+        styles: [style_nmhealthTRACTNUM2_0,]
+    });
+        bounds_group.addLayer(layer_nmhealthTRACTNUM2);
+        map.addLayer(layer_nmhealthTRACTNUM2);
+        var img_Interpolatednearestneighbor3 = 'data/Interpolatednearestneighbor3.png';
+        var img_bounds_Interpolatednearestneighbor3 = [[31.8065718663,-108.848620492],[36.9144638935,-103.126085856]];
+        var overlay_Interpolatednearestneighbor3 = new L.imageOverlay(img_Interpolatednearestneighbor3, img_bounds_Interpolatednearestneighbor3);
+        bounds_group.addLayer(overlay_Interpolatednearestneighbor3);
+        map.addLayer(overlay_Interpolatednearestneighbor3);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{"Interpolated nearest neighbor": overlay_Interpolatednearestneighbor3,'nm_health_TRACTNUM<br /><table><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_100000.png" /></td><td>1.0000</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_555561.png" /></td><td>5.5556</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_1011112.png" /></td><td>10.1111</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_1466673.png" /></td><td>14.6667</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_1922224.png" /></td><td>19.2222</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_2377785.png" /></td><td>23.7778</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_2833336.png" /></td><td>28.3333</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_3288897.png" /></td><td>32.8889</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_3744448.png" /></td><td>37.4444</td></tr><tr><td style="text-align: center;"><img src="legend/nmhealthTRACTNUM2_4200009.png" /></td><td>42.0000</td></tr></table>': layer_nmhealthTRACTNUM2,'nm-county2<br /><table><tr><td style="text-align: center;"><img src="legend/nmcounty20_45590.png" /></td><td> 4.5 - 5.9 </td></tr><tr><td style="text-align: center;"><img src="legend/nmcounty20_59781.png" /></td><td> 5.9 - 7.8 </td></tr><tr><td style="text-align: center;"><img src="legend/nmcounty20_78902.png" /></td><td> 7.8 - 9.0 </td></tr><tr><td style="text-align: center;"><img src="legend/nmcounty20_901083.png" /></td><td> 9.0 - 10.8 </td></tr><tr><td style="text-align: center;"><img src="legend/nmcounty20_1081304.png" /></td><td> 10.8 - 13.0 </td></tr></table>': layer_nmcounty20,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_Residuals1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'POLYNOM'}));
+        </script>
+    </body>
+</html>
