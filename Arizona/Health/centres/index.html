@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" href="css/leaflet-search.css" />
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/healthaz0.js"></script>
+        <script src="data/azcount71.js"></script>
+        <script src="data/healthazOBJECTID2.js"></script>
+        <script src="data/Residuals3.js"></script>
+        <script>
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[31.19052145,-116.072225843],[37.25051455,-107.763695157]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        function setBounds() {
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_healthaz0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? Autolinker.link(String(feature.properties['OBJECTID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RUNDATE'] !== null ? Autolinker.link(String(feature.properties['RUNDATE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OPERSTDESC'] !== null ? Autolinker.link(String(feature.properties['OPERSTDESC'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FACID'] !== null ? Autolinker.link(String(feature.properties['FACID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FACTYPE'] !== null ? Autolinker.link(String(feature.properties['FACTYPE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TYPE_'] !== null ? Autolinker.link(String(feature.properties['TYPE_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SUBTYPE_'] !== null ? Autolinker.link(String(feature.properties['SUBTYPE_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MGMTABBR'] !== null ? Autolinker.link(String(feature.properties['MGMTABBR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FAC_INT_ID'] !== null ? Autolinker.link(String(feature.properties['FAC_INT_ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LEGALLNAME'] !== null ? Autolinker.link(String(feature.properties['LEGALLNAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P_ADDRESS'] !== null ? Autolinker.link(String(feature.properties['P_ADDRESS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P_ADDRESS2'] !== null ? Autolinker.link(String(feature.properties['P_ADDRESS2'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P_ZIP'] !== null ? Autolinker.link(String(feature.properties['P_ZIP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P_CITY'] !== null ? Autolinker.link(String(feature.properties['P_CITY'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['P_State'] !== null ? Autolinker.link(String(feature.properties['P_State'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['p_county'] !== null ? Autolinker.link(String(feature.properties['p_county'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['mail_addre'] !== null ? Autolinker.link(String(feature.properties['mail_addre'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['mail_city'] !== null ? Autolinker.link(String(feature.properties['mail_city'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['mail_zip'] !== null ? Autolinker.link(String(feature.properties['mail_zip'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOLAT'] !== null ? Autolinker.link(String(feature.properties['GEOLAT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOLONG'] !== null ? Autolinker.link(String(feature.properties['GEOLONG'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LICENSE'] !== null ? Autolinker.link(String(feature.properties['LICENSE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LICENSE_EF'] !== null ? Autolinker.link(String(feature.properties['LICENSE_EF'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LICENSE_EX'] !== null ? Autolinker.link(String(feature.properties['LICENSE_EX'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TELEPHONE'] !== null ? Autolinker.link(String(feature.properties['TELEPHONE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FAXPHONE'] !== null ? Autolinker.link(String(feature.properties['FAXPHONE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_ADDRESS'] !== null ? Autolinker.link(String(feature.properties['N_ADDRESS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_CITY'] !== null ? Autolinker.link(String(feature.properties['N_CITY'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_STATE'] !== null ? Autolinker.link(String(feature.properties['N_STATE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_ZIP'] !== null ? Autolinker.link(String(feature.properties['N_ZIP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_ZIP4'] !== null ? Autolinker.link(String(feature.properties['N_ZIP4'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_LON'] !== null ? Autolinker.link(String(feature.properties['N_LON'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_LAT'] !== null ? Autolinker.link(String(feature.properties['N_LAT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_MCODE'] !== null ? Autolinker.link(String(feature.properties['N_MCODE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_LCODE'] !== null ? Autolinker.link(String(feature.properties['N_LCODE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_COUNTY'] !== null ? Autolinker.link(String(feature.properties['N_COUNTY'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_BLOCK'] !== null ? Autolinker.link(String(feature.properties['N_BLOCK'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Is_Facilit'] !== null ? Autolinker.link(String(feature.properties['Is_Facilit'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LastUpdate'] !== null ? Autolinker.link(String(feature.properties['LastUpdate'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UpdatedBy'] !== null ? Autolinker.link(String(feature.properties['UpdatedBy'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GIS_TYPE'] !== null ? Autolinker.link(String(feature.properties['GIS_TYPE'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_healthaz0_0() {
+            return {
+                pane: 'pane_healthaz0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(12,195,140,1.0)',
+            }
+        }
+        map.createPane('pane_healthaz0');
+        map.getPane('pane_healthaz0').style.zIndex = 400;
+        map.getPane('pane_healthaz0').style['mix-blend-mode'] = 'normal';
+        var layer_healthaz0 = new L.geoJson.multiStyle(json_healthaz0, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_healthaz0',
+            onEachFeature: pop_healthaz0,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_healthaz0_0(feature))
+            },
+        ]});
+        bounds_group.addLayer(layer_healthaz0);
+        map.addLayer(layer_healthaz0);
+        function pop_azcount71(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_'] !== null ? Autolinker.link(String(feature.properties['FID_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['diab_2010'] !== null ? Autolinker.link(String(feature.properties['diab_2010'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['obes_cnty'] !== null ? Autolinker.link(String(feature.properties['obes_cnty'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['groc_strs'] !== null ? Autolinker.link(String(feature.properties['groc_strs'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['conv_strs'] !== null ? Autolinker.link(String(feature.properties['conv_strs'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_azcount71_0(feature) {
+            if (feature.properties['diab_2010'] >= 6.000000 && feature.properties['diab_2010'] <= 6.000000 ) {
+                return {
+                pane: 'pane_azcount71',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(247,252,240,1.0)',
+            }
+            }
+            if (feature.properties['diab_2010'] >= 6.000000 && feature.properties['diab_2010'] <= 8.000000 ) {
+                return {
+                pane: 'pane_azcount71',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(204,235,197,1.0)',
+            }
+            }
+            if (feature.properties['diab_2010'] >= 8.000000 && feature.properties['diab_2010'] <= 10.000000 ) {
+                return {
+                pane: 'pane_azcount71',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(123,204,196,1.0)',
+            }
+            }
+            if (feature.properties['diab_2010'] >= 10.000000 && feature.properties['diab_2010'] <= 13.000000 ) {
+                return {
+                pane: 'pane_azcount71',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(43,140,190,1.0)',
+            }
+            }
+            if (feature.properties['diab_2010'] >= 13.000000 && feature.properties['diab_2010'] <= 15.000000 ) {
+                return {
+                pane: 'pane_azcount71',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(8,64,129,1.0)',
+            }
+            }
+        }
+        map.createPane('pane_azcount71');
+        map.getPane('pane_azcount71').style.zIndex = 401;
+        map.getPane('pane_azcount71').style['mix-blend-mode'] = 'normal';
+    var layer_azcount71 = new L.geoJson.multiStyle(json_azcount71, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_azcount71',
+        onEachFeature: pop_azcount71,
+        styles: [style_azcount71_0,]
+    });
+        bounds_group.addLayer(layer_azcount71);
+        map.addLayer(layer_azcount71);
+        function pop_healthazOBJECTID2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['index'] !== null ? Autolinker.link(String(feature.properties['index'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? Autolinker.link(String(feature.properties['OBJECTID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['label'] !== null ? Autolinker.link(String(feature.properties['label'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_healthazOBJECTID2_0(feature) {
+            switch(feature.properties['index']) {
+                case '0':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(84,48,5,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '1':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(140,81,10,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(223,194,125,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(245,245,245,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(128,205,193,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(1,102,94,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_healthazOBJECTID2',
+                opacity: 1,
+                color: 'rgba(0,60,48,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_healthazOBJECTID2');
+        map.getPane('pane_healthazOBJECTID2').style.zIndex = 402;
+        map.getPane('pane_healthazOBJECTID2').style['mix-blend-mode'] = 'normal';
+    var layer_healthazOBJECTID2 = new L.geoJson.multiStyle(json_healthazOBJECTID2, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_healthazOBJECTID2',
+        onEachFeature: pop_healthazOBJECTID2,
+        styles: [style_healthazOBJECTID2_0,]
+    });
+        bounds_group.addLayer(layer_healthazOBJECTID2);
+        map.addLayer(layer_healthazOBJECTID2);
+        function pop_Residuals3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['N_COUNTY'] !== null ? Autolinker.link(String(feature.properties['N_COUNTY'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POLYNOM'] !== null ? Autolinker.link(String(feature.properties['POLYNOM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RESIDUAL'] !== null ? Autolinker.link(String(feature.properties['RESIDUAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Residuals3_0() {
+            return {
+                pane: 'pane_Residuals3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,235,224,1.0)',
+            }
+        }
+        map.createPane('pane_Residuals3');
+        map.getPane('pane_Residuals3').style.zIndex = 403;
+        map.getPane('pane_Residuals3').style['mix-blend-mode'] = 'normal';
+        var layer_Residuals3 = new L.geoJson.multiStyle(json_Residuals3, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Residuals3',
+            onEachFeature: pop_Residuals3,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Residuals3_0(feature))
+            },
+        ]});
+        var cluster_Residuals3 = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_Residuals3.addLayer(layer_Residuals3);
+
+        bounds_group.addLayer(layer_Residuals3);
+        cluster_Residuals3.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'healthaz_OBJECTID<br /><table><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_300.png" /></td><td>3.0</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_14841666671.png" /></td><td>1484.166667</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_30123333332.png" /></td><td>3012.333333</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_451453.png" /></td><td>4514.5</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_601204.png" /></td><td>6012.0</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_81288333335.png" /></td><td>8128.833333</td></tr><tr><td style="text-align: center;"><img src="legend/healthazOBJECTID2_986606.png" /></td><td>9866.0</td></tr></table>': layer_healthazOBJECTID2,'az_count7<br /><table><tr><td style="text-align: center;"><img src="legend/azcount71_60600.png" /></td><td> 6.0 - 6.0 </td></tr><tr><td style="text-align: center;"><img src="legend/azcount71_60801.png" /></td><td> 6.0 - 8.0 </td></tr><tr><td style="text-align: center;"><img src="legend/azcount71_801002.png" /></td><td> 8.0 - 10.0 </td></tr><tr><td style="text-align: center;"><img src="legend/azcount71_1001303.png" /></td><td> 10.0 - 13.0 </td></tr><tr><td style="text-align: center;"><img src="legend/azcount71_1301504.png" /></td><td> 13.0 - 15.0 </td></tr></table>': layer_azcount71,'<img src="legend/healthaz0.png" /> healthaz': layer_healthaz0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: cluster_Residuals3,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'RESIDUAL'}));
+        </script>
+    </body>
+</html>
